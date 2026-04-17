@@ -71,5 +71,5 @@ flutter build ios  # For iOS
 This project is part of an academic assignment and for personal use.
 
 ## 📬 Contact
-For questions or suggestions, contact: `[email or other channel]`
+For questions or suggestions, contact: `[6731503014@lamduan.mfu.ac.th]`
 ```
