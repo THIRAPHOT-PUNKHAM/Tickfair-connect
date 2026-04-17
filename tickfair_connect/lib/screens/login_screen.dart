@@ -80,58 +80,57 @@ class _LoginScreenState extends State<LoginScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                SizedBox(height: MediaQuery.of(context).size.height * 0.05),
                 // Logo/Header
                 Center(
                   child: Image.asset(
                     'assets/images/logo.png',
-                    width: 130,
-                    height: 130,
+                    width: 100,
+                    height: 100,
                     fit: BoxFit.contain,
                     errorBuilder: (context, error, stackTrace) {
                       return const Icon(
                         Icons.local_activity,
-                        size: 130,
+                        size: 100,
                         color: AppTheme.primaryColor,
                       );
                     },
                   ),
                 ),
-                const SizedBox(height: 22),
+                const SizedBox(height: 16),
                 // Title
                 const Center(
                   child: Text(
                     'TickFair Connect',
                     style: TextStyle(
-                      fontSize: 28,
+                      fontSize: 24,
                       fontWeight: FontWeight.bold,
                       color: Color(0xFF1A5F7A),
                     ),
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 6),
                 const Center(
                   child: Text(
                     'Fair Queuing for Smart Events',
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 13,
                       color: Color(0xFF5A7B8C),
                     ),
                   ),
                 ),
-                const SizedBox(height: 40),
+                const SizedBox(height: 28),
                 // Email Field
                 TextField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     hintText: 'Enter your email',
-                    helperText: 'use @gmail.com',
+                    helperText: 'Must use @gmail.com',
                     helperStyle: const TextStyle(fontSize: 12, color: Color(0xFF5A7B8C)),
                     prefixIcon: const Icon(Icons.email, color: AppTheme.primaryColor),
                     suffixIcon: _emailController.text.isNotEmpty

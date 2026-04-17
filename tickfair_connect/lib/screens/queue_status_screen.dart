@@ -139,16 +139,16 @@ class _QueueStatusScreenState extends State<QueueStatusScreen> {
 
           return SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 20),
                   // Position Circle
                   Center(
                     child: Container(
-                      width: 160,
-                      height: 160,
+                      width: 140,
+                      height: 140,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: isReady
@@ -156,7 +156,7 @@ class _QueueStatusScreenState extends State<QueueStatusScreen> {
                             : AppTheme.primaryColor.withAlpha((0.1 * 255).round()),
                         border: Border.all(
                           color: isReady ? AppTheme.successColor : AppTheme.primaryColor,
-                          width: 3,
+                          width: 2,
                         ),
                       ),
                       child: Column(
@@ -165,16 +165,16 @@ class _QueueStatusScreenState extends State<QueueStatusScreen> {
                           Text(
                             '$position',
                             style: TextStyle(
-                              fontSize: 64,
+                              fontSize: 56,
                               fontWeight: FontWeight.bold,
                               color: isReady ? AppTheme.successColor : AppTheme.primaryColor,
                             ),
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: 6),
                           Text(
-                            isReady ? 'In Position' : 'In Queue',
+                            isReady ? 'Your queue' : 'Your queue',
                             style: TextStyle(
-                              fontSize: 14,
+                              fontSize: 13,
                               color: isReady ? AppTheme.successColor : AppTheme.primaryColor,
                             ),
                           ),
@@ -182,13 +182,19 @@ class _QueueStatusScreenState extends State<QueueStatusScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 28),
                   // Queue Info
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.grey.shade100,
+                      color: isReady
+                          ? AppTheme.successColor.withAlpha((0.08 * 255).round())
+                          : AppTheme.primaryColor.withAlpha((0.08 * 255).round()),
                       borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: isReady ? AppTheme.successColor : AppTheme.primaryColor,
+                        width: 1,
+                      ),
                     ),
                     child: Column(
                       children: [
@@ -198,49 +204,16 @@ class _QueueStatusScreenState extends State<QueueStatusScreen> {
                           value: position == 1 ? 'Next!' : 'Position #$position',
                           isHighlight: isReady,
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 12),
                         _buildQueueInfo(
-                          icon: Icons.access_time,
-                          label: 'Estimated Wait',
-                          value: position == 1 ? 'Ready to reserve' : '~${(position - 1) * 2} min',
-                        ),
-                        const SizedBox(height: 16),
-                        _buildQueueInfo(
-                          icon: Icons.warning,
+                          icon: Icons.info_outline,
                           label: 'Status',
                           value: position == 1 ? 'Ready to reserve' : 'Please wait your turn',
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 24),
-                  // Info Box
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: AppTheme.primaryColor.withAlpha((0.1 * 255).round()),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: AppTheme.primaryColor),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Fair Queue System',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: AppTheme.primaryColor,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        const Text(
-                          'Your position is determined by the time you joined. Please keep the app open to maintain your spot in the queue.',
-                          style: TextStyle(fontSize: 12, color: Colors.grey),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 18),
                   // Reserve Button (enabled when position == 1)
                   if (isReady)
                     ElevatedButton.icon(
@@ -250,14 +223,14 @@ class _QueueStatusScreenState extends State<QueueStatusScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppTheme.successColor,
                         foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
                     )
                   else
                     ElevatedButton(
                       onPressed: null,
                       style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
                         disabledBackgroundColor: Colors.grey.shade300,
                       ),
                       child: const Text('Waiting for your turn...'),
@@ -291,22 +264,22 @@ class _QueueStatusScreenState extends State<QueueStatusScreen> {
         Icon(
           icon,
           color: isHighlight ? AppTheme.successColor : AppTheme.primaryColor,
-          size: 20,
+          size: 18,
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: 10),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 label,
-                style: const TextStyle(fontSize: 12, color: Colors.grey),
+                style: const TextStyle(fontSize: 11, color: Colors.grey),
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: 3),
               Text(
                 value,
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 14,
                   fontWeight: FontWeight.w600,
                   color: isHighlight ? AppTheme.successColor : Colors.black,
                 ),

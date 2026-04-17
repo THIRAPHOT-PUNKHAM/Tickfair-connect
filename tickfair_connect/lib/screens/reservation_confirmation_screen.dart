@@ -1,32 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pw;
-import 'package:printing/printing.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import '../services/db_service.dart';
 import '../theme/app_theme.dart';
-
-pw.Widget _buildPdfTicketField(String label, String value) {
-  return pw.Row(
-    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-    children: [
-      pw.Text(
-        label,
-        style: pw.TextStyle(
-          fontSize: 14,
-          color: PdfColors.grey700,
-        ),
-      ),
-      pw.Text(
-        value,
-        style: pw.TextStyle(
-          fontSize: 16,
-          fontWeight: pw.FontWeight.bold,
-        ),
-      ),
-    ],
-  );
-}
 
 class ReservationConfirmationScreen extends StatelessWidget {
   static const routeName = '/reservation';
@@ -179,112 +155,67 @@ class ReservationConfirmationScreen extends StatelessWidget {
                               ? '${reservedAt.day}/${reservedAt.month}/${reservedAt.year} ${reservedAt.hour}:${reservedAt.minute.toString().padLeft(2, '0')}'
                               : 'N/A',
                         ),
-                        const SizedBox(height: 16),
-                        _buildTicketField(
-                          label: 'Ticket Type',
-                          value: 'General Admission',
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-                  // Important Notice
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.blue.withAlpha((0.1 * 255).round()),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.blue),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            const Icon(Icons.info, color: Colors.blue),
-                            const SizedBox(width: 12),
-                            const Expanded(
-                              child: Text(
-                                'Important',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.blue,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        const Text(
-                          'Please save your ticket number. You will need it to check in at the event. One ticket per account per event.',
-                          style: TextStyle(fontSize: 12, color: Colors.grey),
-                        ),
                       ],
                     ),
                   ),
                   const SizedBox(height: 32),
                   OutlinedButton.icon(
-                    onPressed: () async {
-                      try {
-                        final pdf = pw.Document();
-
-                        pdf.addPage(
-                          pw.Page(
-                            pageFormat: PdfPageFormat.a4,
-                            build: (pw.Context context) {
-                              return pw.Container(
-                                padding: const pw.EdgeInsets.all(24),
-                                child: pw.Column(
-                                  crossAxisAlignment: pw.CrossAxisAlignment.start,
-                                  children: [
-                                    pw.Text(
-                                      'Ticket Details',
-                                      style: pw.TextStyle(
-                                        fontSize: 24,
-                                        fontWeight: pw.FontWeight.bold,
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext ctx) {
+                          return Dialog(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(24),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Text(
+                                    'Scan to Verify Ticket',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 24),
+                                  QrImageView(
+                                    data: ticketNumber,
+                                    version: QrVersions.auto,
+                                    size: 200,
+                                    backgroundColor: Colors.white,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    ticketNumber,
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 24),
+                                  ElevatedButton(
+                                    onPressed: () => Navigator.pop(ctx),
+                                    style: ElevatedButton.styleFrom(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 32,
+                                        vertical: 12,
                                       ),
                                     ),
-                                    pw.SizedBox(height: 24),
-                                    _buildPdfTicketField('Ticket Number', ticketNumber),
-                                    pw.SizedBox(height: 16),
-                                    _buildPdfTicketField('Status', status.toUpperCase()),
-                                    if (seatLabel != null) ...[
-                                      pw.SizedBox(height: 16),
-                                      _buildPdfTicketField('Seat', seatLabel),
-                                    ],
-                                    if (price != null) ...[
-                                      pw.SizedBox(height: 16),
-                                      _buildPdfTicketField('Price', 'THB $price'),
-                                    ],
-                                    pw.SizedBox(height: 16),
-                                    _buildPdfTicketField(
-                                      'Reserved At',
-                                      reservedAt != null
-                                          ? '${reservedAt.day}/${reservedAt.month}/${reservedAt.year} ${reservedAt.hour}:${reservedAt.minute.toString().padLeft(2, '0')}'
-                                          : 'N/A',
-                                    ),
-                                    pw.SizedBox(height: 16),
-                                    _buildPdfTicketField('Ticket Type', 'General Admission'),
-                                  ],
-                                ),
-                              );
-                            },
-                          ),
-                        );
-
-                        await Printing.layoutPdf(
-                          onLayout: (PdfPageFormat format) async => pdf.save(),
-                        );
-                      } catch (e) {
-                         ScaffoldMessenger.of(context).showSnackBar(
-                           SnackBar(
-                             content: Text('Error generating PDF: $e'),
-                           ),
-                         );
-                      }
+                                    child: const Text('Close'),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
                     },
-                    icon: const Icon(Icons.download),
-                    label: const Text('Download Ticket'),
+                    icon: const Icon(Icons.qr_code_2),
+                    label: const Text('Scan Ticket'),
                   ),
                   const SizedBox(height: 32),
                   // Back Button

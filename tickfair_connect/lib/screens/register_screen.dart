@@ -77,24 +77,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const Text(
                   'Join TickFair',
                   style: TextStyle(
-                    fontSize: 24,
+                    fontSize: 22,
                     fontWeight: FontWeight.bold,
                     color: Color(0xFF1A5F7A),
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 6),
                 const Text(
                   'Register to start booking tickets fairly',
-                  style: TextStyle(fontSize: 14, color: Color(0xFF5A7B8C)),
+                  style: TextStyle(fontSize: 13, color: Color(0xFF5A7B8C)),
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 24),
                 // Email Field
                 TextField(
                   controller: _emailController,

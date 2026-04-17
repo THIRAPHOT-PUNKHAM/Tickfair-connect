@@ -18,7 +18,6 @@ class EventListScreen extends StatefulWidget {
 class _EventListScreenState extends State<EventListScreen> {
   final _searchController = TextEditingController();
   String _searchQuery = '';
-  String _sortBy = 'dateTime'; // 'dateTime' or 'availability'
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +26,21 @@ class _EventListScreenState extends State<EventListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Available Events'),
+        title: StreamBuilder<Map<String, dynamic>?>(
+          stream: auth.currentUserData,
+          builder: (context, snapshot) {
+            if (snapshot.hasData && snapshot.data != null) {
+              final userName = snapshot.data!['displayName'] ?? snapshot.data!['email'] ?? 'User';
+              return Text('Hi, $userName');
+            }
+            return const Text('Available Events');
+          },
+        ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.person),
+            onPressed: () => Navigator.pushNamed(context, '/profile'),
+          ),
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () async {
@@ -72,16 +84,7 @@ class _EventListScreenState extends State<EventListScreen> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                // Sort Options
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      _buildSortButton('Upcoming', 'dateTime'),
-                      const SizedBox(width: 8),
-                    ],
-                  ),
-                ),
+
               ],
             ),
           ),
@@ -119,18 +122,11 @@ class _EventListScreenState extends State<EventListScreen> {
                          description.contains(_searchQuery);
                 }).toList();
 
-                // Sort the events
+                // Sort the events by date/time
                 filtered.sort((a, b) {
-                  if (_sortBy == 'dateTime') {
-                    final dateA = (a.data()['dateTime'] as Timestamp?)?.toDate() ?? DateTime(2999);
-                    final dateB = (b.data()['dateTime'] as Timestamp?)?.toDate() ?? DateTime(2999);
-                    return dateA.compareTo(dateB);
-                  } else if (_sortBy == 'availability') {
-                    final availA = (a.data()['ticketsAvailable'] ?? 0) as int;
-                    final availB = (b.data()['ticketsAvailable'] ?? 0) as int;
-                    return availB.compareTo(availA); // Sort by availability descending
-                  }
-                  return 0;
+                  final dateA = (a.data()['dateTime'] as Timestamp?)?.toDate() ?? DateTime(2999);
+                  final dateB = (b.data()['dateTime'] as Timestamp?)?.toDate() ?? DateTime(2999);
+                  return dateA.compareTo(dateB);
                 });
 
                 if (filtered.isEmpty) {
@@ -158,8 +154,14 @@ class _EventListScreenState extends State<EventListScreen> {
                   );
                 }
 
-                return ListView.builder(
-                  padding: const EdgeInsets.all(12),
+                return GridView.builder(
+                  padding: const EdgeInsets.all(14),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 0.82,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 14,
+                  ),
                   itemCount: filtered.length,
                   itemBuilder: (ctx, i) {
                     final event = filtered[i];
@@ -174,9 +176,41 @@ class _EventListScreenState extends State<EventListScreen> {
                         ? '${dateTime.day}/${dateTime.month}/${dateTime.year}'
                         : 'TBA';
 
-                    return Card(
-                      margin: const EdgeInsets.symmetric(vertical: 8),
-                      elevation: 2,
+                    // Determine background image based on event name
+                    String? backgroundImage;
+                    final lowerName = name.toLowerCase();
+                    if (lowerName.contains('khemjira')) {
+                      backgroundImage = 'assets/images/khemjira.jpg';
+                    } else if (lowerName.contains('bts') || lowerName.contains('homecoming')) {
+                      backgroundImage = 'assets/images/BTS.jpg';
+                    } else if (lowerName.contains('pixxie')) {
+                      backgroundImage = 'assets/images/pixxie.jpg';
+                    } else if (lowerName.contains('bowkylion')) {
+                      backgroundImage = 'assets/images/bowkylion.webp';
+                    }
+
+                    return Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withAlpha((0.2 * 255).round()),
+                            blurRadius: 4,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                        color: Colors.grey[800],
+                        image: backgroundImage != null
+                            ? DecorationImage(
+                                image: AssetImage(backgroundImage),
+                                fit: BoxFit.cover,
+                                colorFilter: ColorFilter.mode(
+                                  Colors.black.withAlpha((0.4 * 255).round()),
+                                  BlendMode.darken,
+                                ),
+                              )
+                            : null,
+                      ),
                       child: InkWell(
                         onTap: () {
                           // include event id in the path to support deep links
@@ -187,7 +221,7 @@ class _EventListScreenState extends State<EventListScreen> {
                           );
                         },
                         child: Padding(
-                          padding: const EdgeInsets.all(16),
+                          padding: const EdgeInsets.all(14),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -198,10 +232,11 @@ class _EventListScreenState extends State<EventListScreen> {
                                     child: Text(
                                       name,
                                       style: const TextStyle(
-                                        fontSize: 16,
+                                        fontSize: 15,
                                         fontWeight: FontWeight.bold,
+                                        color: Colors.white,
                                       ),
-                                      maxLines: 1,
+                                      maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
@@ -214,7 +249,7 @@ class _EventListScreenState extends State<EventListScreen> {
                                       borderRadius: BorderRadius.circular(4),
                                     ),
                                     child: Text(
-                                      available > 0 ? '$available left' : 'Sold out',
+                                      available > 0 ? '$available' : 'Full',
                                       style: TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.w600,
@@ -229,48 +264,49 @@ class _EventListScreenState extends State<EventListScreen> {
                               const SizedBox(height: 8),
                               Row(
                                 children: [
-                                  const Icon(Icons.location_on, size: 16, color: Colors.grey),
-                                  const SizedBox(width: 4),
+                                  const Icon(Icons.location_on, size: 13, color: Colors.white70),
+                                  const SizedBox(width: 3),
                                   Expanded(
                                     child: Text(
                                       venue,
-                                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+                                      style: const TextStyle(fontSize: 11, color: Colors.white70),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 6),
+                              const SizedBox(height: 5),
                               Row(
                                 children: [
-                                  const Icon(Icons.calendar_today, size: 16, color: Colors.grey),
-                                  const SizedBox(width: 4),
+                                  const Icon(Icons.calendar_today, size: 13, color: Colors.white70),
+                                  const SizedBox(width: 3),
                                   Text(
                                     date,
-                                    style: const TextStyle(fontSize: 12, color: Colors.grey),
+                                    style: const TextStyle(fontSize: 11, color: Colors.white70),
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 12),
+                              const Spacer(),
                               LinearProgressIndicator(
                                 value: capacity > 0 ? (capacity - available) / capacity : 0,
-                                backgroundColor: Colors.grey.shade200,
+                                backgroundColor: Colors.white30,
                                 valueColor: const AlwaysStoppedAnimation<Color>(
-                                  AppTheme.primaryColor,
+                                  AppTheme.successColor,
                                 ),
+                                minHeight: 4,
                               ),
-                              const SizedBox(height: 8),
+                              const SizedBox(height: 6),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    '$capacity tickets',
-                                    style: const TextStyle(fontSize: 12, color: Colors.grey),
+                                    '$capacity tkt',
+                                    style: const TextStyle(fontSize: 10, color: Colors.white70),
                                   ),
                                   Text(
-                                    '${((capacity - available) / capacity * 100).toStringAsFixed(0)}% sold',
-                                    style: const TextStyle(fontSize: 12, color: Colors.grey),
+                                    '${((capacity - available) / capacity * 100).toStringAsFixed(0)}%',
+                                    style: const TextStyle(fontSize: 10, color: Colors.white70),
                                   ),
                                 ],
                               ),
@@ -316,25 +352,4 @@ class _EventListScreenState extends State<EventListScreen> {
     super.dispose();
   }
 
-  Widget _buildSortButton(String label, String value) {
-    final isSelected = _sortBy == value;
-    return FilterChip(
-      label: Text(
-        label,
-        style: TextStyle(
-          color: isSelected ? Colors.white : AppTheme.primaryColor,
-          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-        ),
-      ),
-      selected: isSelected,
-      onSelected: (selected) {
-        setState(() => _sortBy = value);
-      },
-      backgroundColor: Colors.white,
-      selectedColor: AppTheme.primaryColor,
-      side: BorderSide(
-        color: isSelected ? AppTheme.primaryColor : Colors.grey.shade300,
-      ),
-    );
-  }
 }

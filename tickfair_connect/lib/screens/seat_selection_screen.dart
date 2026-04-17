@@ -18,6 +18,7 @@ class _SeatSelectionScreenState extends State<SeatSelectionScreen> {
   int? selectedSeatIndex;
   int? selectedRow;
   int _eventPrice = 0; // เก็บราคาที่ดึงมาจาก Firebase
+  String _eventName = ''; // เก็บชื่อเหตุการณ์
   bool _reserving = false;
 
   Map<String, dynamic>? _existingTicket;
@@ -42,22 +43,20 @@ class _SeatSelectionScreenState extends State<SeatSelectionScreen> {
 
     setState(() => _reserving = true);
     try {
-      final db = context.read<DbService>();
       final seatLabel = _getSeatLabel(selectedSeatIndex!);
 
-      // ส่งข้อมูลที่นั่ง พร้อมราคาที่ดึงมาจาก Firebase (_eventPrice)
-      final ticketId = await db.reserveTicketWithSeat(
-        eventId,
-        queueId,
-        seatLabel,
-        _eventPrice,
-      );
-
+      // Navigate to payment screen
       if (mounted) {
         Navigator.pushReplacementNamed(
           context,
-          '/reservation',
-          arguments: {'eventId': eventId, 'ticketId': ticketId},
+          '/payment',
+          arguments: {
+            'eventId': eventId,
+            'queueId': queueId,
+            'eventName': _eventName,
+            'seatLabel': seatLabel,
+            'price': _eventPrice,
+          },
         );
       }
     } catch (e) {
@@ -94,8 +93,9 @@ class _SeatSelectionScreenState extends State<SeatSelectionScreen> {
                 setState(() {
                   _existingTicket = results[0] as Map<String, dynamic>?;
                   final eventData = results[1] as Map<String, dynamic>?;
-                  // ดึงค่า price จาก Firebase (ถ้าไม่มีให้เป็น 0)
+                  // ดึงค่า price และ name จาก Firebase
                   _eventPrice = eventData?['price'] ?? 0;
+                  _eventName = eventData?['name'] ?? 'Event';
                   _bookedSeats = results[2] as List<String>;
                 });
               }

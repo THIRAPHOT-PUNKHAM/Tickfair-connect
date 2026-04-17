@@ -169,7 +169,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                             end: Alignment.bottomRight,
                           ),
                         ),
-                        padding: const EdgeInsets.all(24),
+                        padding: const EdgeInsets.all(18),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -199,7 +199,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                             Text(
                               name,
                               style: const TextStyle(
-                                fontSize: 28,
+                                fontSize: 24,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
                               ),
@@ -211,7 +211,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                       ),
                       // Event Info
                       Padding(
-                        padding: const EdgeInsets.all(24),
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -221,48 +221,49 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                               label: 'Date & Time',
                               value: '$date at $time',
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 14),
                             // Location
                             _buildInfoSection(
                               icon: Icons.location_on,
                               label: 'Venue',
                               value: venue,
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 12),
                             _buildInfoSection(
                               icon: Icons.attach_money,
-                              label: 'price',
+                              label: 'Price',
                               value: '$price Baht',
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 12),
                             // Ticket Info
                             _buildInfoSection(
                               icon: Icons.confirmation_number,
                               label: 'Tickets Available',
                               value: '$available / $capacity',
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 14),
                             // Description
                             const Text(
                               'About Event',
                               style: TextStyle(
-                                fontSize: 18,
+                                fontSize: 14,
                                 fontWeight: FontWeight.bold,
+                                color: Color(0xFF1A5F7A),
                               ),
                             ),
                             const SizedBox(height: 8),
                             Text(
                               description,
                               style: const TextStyle(
-                                fontSize: 14,
+                                fontSize: 12,
                                 color: Colors.grey,
-                                height: 1.5,
+                                height: 1.6,
                               ),
                             ),
-                            const SizedBox(height: 24),
+                            const SizedBox(height: 14),
                             // Ticket Status
                             Container(
-                              padding: const EdgeInsets.all(16),
+                              padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
                                 color: available > 0
                                     ? AppTheme.successColor.withAlpha(
@@ -287,8 +288,9 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                                     color: available > 0
                                         ? AppTheme.successColor
                                         : AppTheme.errorColor,
+                                    size: 18,
                                   ),
-                                  const SizedBox(width: 12),
+                                  const SizedBox(width: 10),
                                   Expanded(
                                     child: Text(
                                       (available > 0 && capacity > 0)
@@ -301,13 +303,14 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                                             ? AppTheme.successColor
                                             : AppTheme.errorColor,
                                         fontWeight: FontWeight.w600,
+                                        fontSize: 13,
                                       ),
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                            const SizedBox(height: 24),
+                            const SizedBox(height: 14),
                             // Error Message
                             if (_error != null)
                               Container(
@@ -344,59 +347,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                                   ],
                                 ),
                               ),
-                            const SizedBox(height: 24),
-                            // Booking Info Box
-                            Container(
-                              padding: const EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                color: AppTheme.primaryColor.withAlpha(
-                                  (0.1 * 255).round(),
-                                ),
-                                borderRadius: BorderRadius.circular(8),
-                                border: Border.all(
-                                  color: AppTheme.primaryColor,
-                                ),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.info_outline,
-                                        color: AppTheme.primaryColor,
-                                        size: 20,
-                                      ),
-                                      const SizedBox(width: 12),
-                                      Expanded(
-                                        child: Text(
-                                          available > 0
-                                              ? 'Join our fair queue to book your ticket'
-                                              : 'This event is sold out',
-                                          style: const TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600,
-                                            color: AppTheme.primaryColor,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  if (available > 0) ...[
-                                    const SizedBox(height: 12),
-                                    const Text(
-                                      'Your position in the queue will be determined by when you join. When your turn comes, you\'ll be able to complete your booking.',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.grey,
-                                        height: 1.5,
-                                      ),
-                                    ),
-                                  ],
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 24),
+                            const SizedBox(height: 12),
                             // Booking / Booked Button
                             userTicket != null
                                 ? SizedBox(
@@ -419,7 +370,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                                       label: const Text('View Ticket'),
                                       style: ElevatedButton.styleFrom(
                                         padding: const EdgeInsets.symmetric(
-                                          vertical: 14,
+                                          vertical: 12,
                                         ),
                                         backgroundColor: AppTheme.successColor,
                                       ),
@@ -444,7 +395,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                                             style: ElevatedButton.styleFrom(
                                               padding:
                                                   const EdgeInsets.symmetric(
-                                                    vertical: 14,
+                                                    vertical: 12,
                                                   ),
                                               backgroundColor: available > 0
                                                   ? AppTheme.primaryColor
@@ -471,21 +422,21 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   }) {
     return Row(
       children: [
-        Icon(icon, color: AppTheme.primaryColor, size: 24),
-        const SizedBox(width: 12),
+        Icon(icon, color: AppTheme.primaryColor, size: 20),
+        const SizedBox(width: 10),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 label,
-                style: const TextStyle(fontSize: 12, color: Colors.grey),
+                style: const TextStyle(fontSize: 11, color: Colors.grey),
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: 3),
               Text(
                 value,
                 style: const TextStyle(
-                  fontSize: 16,
+                  fontSize: 14,
                   fontWeight: FontWeight.w600,
                 ),
               ),

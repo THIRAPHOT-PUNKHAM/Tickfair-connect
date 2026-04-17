@@ -316,4 +316,24 @@ class DbService {
     final doc = await userProfiles.doc(userId).get();
     return doc.exists ? doc.data() as Map<String, dynamic> : null;
   }
+
+  /// Get all booked tickets for the current user as a stream
+  Stream<QuerySnapshot<Map<String, dynamic>>> getUserTicketsStream() {
+    final userId = _auth.currentUser?.uid;
+    if (userId == null) {
+      return Stream.empty();
+    }
+    
+    return tickets
+        .where('userId', isEqualTo: userId)
+        .where('status', isEqualTo: 'reserved')
+        .snapshots()
+        .cast<QuerySnapshot<Map<String, dynamic>>>();
+  }
+
+  /// Get event details for a ticket
+  Future<Map<String, dynamic>?> getEventDataForTicket(String eventId) async {
+    final doc = await events.doc(eventId).get();
+    return doc.exists ? doc.data() as Map<String, dynamic> : null;
+  }
 }

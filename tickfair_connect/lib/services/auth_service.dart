@@ -75,14 +75,20 @@ class AuthService {
         errorMsg = 'This Google account is already linked to another login method';
       } else if (e.code == 'invalid-credential') {
         errorMsg = 'Invalid credentials. Please try again.';
+      } else if (e.code == 'cancelled' || e.message?.contains('closed') == true) {
+        errorMsg = 'Sign-in was cancelled. Please try again.';
       }
       throw Exception(errorMsg);
     } on FirebaseException catch (e) {
-      throw Exception('Firebase error: ${e.message}');
+      String errorMsg = 'Firebase error: ${e.message}';
+      if (e.message?.contains('closed') == true || e.message?.contains('popup') == true) {
+        errorMsg = 'Sign-in was cancelled. Please try again.';
+      }
+      throw Exception(errorMsg);
     } catch (e) {
       String errorMsg = '$e';
-      if (e.toString().contains('popup_closed')) {
-        errorMsg = 'Google Sign-In popup was closed. Please try again.';
+      if (e.toString().contains('popup_closed') || e.toString().contains('closed')) {
+        errorMsg = 'Sign-in was cancelled. Please try again.';
       } else if (e.toString().contains('network')) {
         errorMsg = 'Network error. Please check your internet connection.';
       }
@@ -102,4 +108,17 @@ class AuthService {
 
   /// Current user stream for listening to auth state changes.
   Stream<User?> get authStateChanges => _auth.authStateChanges();
+
+  /// Get current user data as a stream
+  Stream<Map<String, dynamic>?> get currentUserData {
+    return authStateChanges.asyncMap((user) async {
+      if (user == null) return null;
+      await user.reload();
+      return {
+        'uid': user.uid,
+        'email': user.email,
+        'displayName': user.displayName ?? user.email?.split('@').first ?? 'User',
+      };
+    });
+  }
 }
