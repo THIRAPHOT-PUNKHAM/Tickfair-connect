@@ -1,62 +1,72 @@
 # TickFair Connect
 
-Cross‑platform Flutter mobile application implementing the MVP described in `PRD-tickfairconnect.md`.
+## Project Description
+TickFair Connect is a Flutter-based mobile application designed to solve the problem of unfair ticket distribution for small events. It implements a first-come-first-served queue system coupled with a single-ticket policy to ensure transparency, fairness, and simplicity.
 
-## Project setup
+The app targets university-age users who often miss out on tickets due to simultaneous heavy access and lack of visible queue order.
 
-1. Install Flutter SDK and ensure `flutter` is on your PATH.
-2. Open the project folder in VS Code or your preferred IDE.
-3. Run `flutter pub get` to install dependencies.
+## Key Features
+- **Authentication & Profile**: User registration and login via email/password.
+- **Event Listing & Discovery**: Display a scrollable list of available events with search/filter capabilities.
+- **Queue Management**: Allow users to join a queue for selected events, preventing duplicate entries.
+- **Real-Time Updates**: Display queue position and estimated wait time.
+- **Ticket Reservation**: Reserve tickets when it's the user's turn, with confirmation and ticket saving.
 
-## Firebase configuration
+## Technology Stack
+- **Frontend**: Flutter (Dart)
+- **Authentication**: Firebase Authentication
+- **Database**: Firebase Firestore
+- **Realtime Updates**: Firebase Realtime Database
+- **Notifications**: Firebase Cloud Messaging
+- **Storage**: Firebase Cloud Storage
 
-Before running the app you must add Firebase configuration files:
+## Installation and Running
 
-- For Android: place `google-services.json` in `android/app/`.
-- For iOS/macOS: place `GoogleService-Info.plist` in `ios/Runner/` and `macos/Runner/` respectively.
+### Prerequisites
+- Flutter SDK (latest version)
+- Dart SDK
+- Firebase CLI (for Firebase setup)
 
-Also add the required Gradle and Xcode setup from the [Firebase Flutter docs](https://firebase.flutter.dev/docs/overview).
+### Installation Steps
+1. Clone this project:
+   ```
+   git clone <repository-url>
+   cd tickfair_connect
+   ```
 
-Call `Firebase.initializeApp()` before using any Firebase APIs; this is already
-handled in `lib/main.dart`.
+2. Install dependencies:
+   ```
+   flutter pub get
+   ```
 
-## Running the app
+3. Configure Firebase:
+   - Create a new Firebase project
+   - Add `google-services.json` to `android/app/`
+   - Add Firebase config to `lib/firebase_options.dart`
 
-- Debug on an emulator or device with `flutter run`.
-- Build a release APK with `flutter build apk`.
+4. Run the app:
+   ```
+   flutter run
+   ```
 
-## Core screens & features
-
-- Login / Register (Firebase Auth)
-- Event listing and detail
-- Queue status and ticket reservation
-
-See `PRD-tickfairconnect.md` for full requirements.
-
-## Development notes
-
-Use the `AuthService` and `DbService` in `lib/services` as helpers for
-authentication and Firestore operations. Screens are located in
-`lib/screens`.
-
-### Firestore indexes ⚠️
-
-Several of the app's queries filter on multiple fields (e.g. eventId +
-status + joinedAt in the queue collection). Firestore requires a
-composite index for these queries; otherwise you'll see an error like:
-
+### Building for Production
 ```
-[cloud_firestore/failed-precondition] The query requires an index...
+flutter build apk  # For Android
+flutter build ios  # For iOS
 ```
 
-A `firestore.indexes.json` file is included at the project root with the
-necessary definitions. To deploy the indexes run:
+## Development
+- **Developer**: Thiraphot Punkham
+- **Date**: February 2026
+- **Version**: MVP
 
-```bash
-firebase deploy --only firestore:indexes
-```
+## License
+This project is part of an academic assignment and for personal use.
 
-Alternatively, follow the link provided in the error message to create
-them manually in the Firebase console.
+## Contact
+For questions or suggestions, contact [email or other channel]
 
+---
 
+*TickFair Connect - Making ticket booking fair and easy*</content>
+<parameter name="filePath">d:\Mini Project tickfair connect\tickfair_connect\README.md
