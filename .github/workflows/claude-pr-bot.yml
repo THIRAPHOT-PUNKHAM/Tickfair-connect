@@ -1,0 +1,37 @@
+name: Claude AI PR Assistant
+
+# กำหนดเงื่อนไขที่บอทจะตื่นขึ้นมาทำงาน
+on:
+  issues:
+    types: [opened, labeled]
+  issue_comment:
+    types: [created]
+
+# กำหนดสิทธิ์ให้บอทสามารถอ่านโค้ดและสร้าง PR ได้
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  claude_bot_job:
+    # บอทจะทำงานก็ต่อเมื่อ: Issue มีป้าย 'ai-pr' หรือ มีคนคอมเมนต์คำว่า '@claude'
+    if: >-
+      (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'ai-pr')) ||
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude'))
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # (สมมติ) เรียกใช้งาน Script หรือ Action ที่เชื่อมกับ Claude API
+      - name: Run Claude Assistant
+        run: |
+          echo "🤖 ตื่นแล้วครับ! ได้รับคำสั่งแล้ว กำลังส่งเรื่องให้ Claude ประมวลผล..."
+          # บริเวณนี้จะเป็นที่อยู่ของ Script (Python/Node.js) ที่ทำหน้าที่ส่งข้อมูลหา Claude 
+          # และจัดการเปิด Pull Request ต่อไป
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CLAUDE_API_KEY: ${{ secrets.CLAUDE_API_KEY }} 
+          # ^-- ตรงนี้คือการดึงรหัสลับที่คุณเพิ่งตั้งค่าไว้มาใช้งานครับ!
