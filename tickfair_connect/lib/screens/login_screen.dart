@@ -40,8 +40,22 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _submit() async {
-    if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+
+    // Validation
+    if (email.isEmpty || password.isEmpty) {
       setState(() => _error = 'Please fill all fields');
+      return;
+    }
+
+    if (!email.endsWith('@gmail.com')) {
+      setState(() => _error = 'Please use a Gmail account (@gmail.com)');
+      return;
+    }
+
+    if (password.length < 8) {
+      setState(() => _error = 'Password must be at least 8 characters');
       return;
     }
 
@@ -50,10 +64,7 @@ class _LoginScreenState extends State<LoginScreen> {
       _error = null;
     });
     try {
-      await context.read<AuthService>().signIn(
-            _emailController.text.trim(),
-            _passwordController.text,
-          );
+      await context.read<AuthService>().signIn(email, password);
       if (mounted) Navigator.pushReplacementNamed(context, '/events');
     } catch (e) {
       setState(() => _error = e.toString().replaceFirst('Exception: ', ''));
@@ -65,6 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF0F4F8),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -76,21 +88,21 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(height: MediaQuery.of(context).size.height * 0.05),
                 // Logo/Header
                 Center(
-                  child: Container(
-                    width: 80,
-                    height: 80,
-                    decoration: BoxDecoration(
-                      color: AppTheme.primaryColor,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: const Icon(
-                      Icons.local_activity,
-                      size: 48,
-                      color: Colors.white,
-                    ),
+                  child: Image.asset(
+                    'assets/images/logo.png',
+                    width: 130,
+                    height: 130,
+                    fit: BoxFit.contain,
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Icon(
+                        Icons.local_activity,
+                        size: 130,
+                        color: AppTheme.primaryColor,
+                      );
+                    },
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 22),
                 // Title
                 const Center(
                   child: Text(
@@ -98,7 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
-                      color: AppTheme.primaryColor,
+                      color: Color(0xFF1A5F7A),
                     ),
                   ),
                 ),
@@ -108,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     'Fair Queuing for Smart Events',
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.grey,
+                      color: Color(0xFF5A7B8C),
                     ),
                   ),
                 ),
@@ -119,6 +131,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     hintText: 'Enter your email',
+                    helperText: 'use @gmail.com',
+                    helperStyle: const TextStyle(fontSize: 12, color: Color(0xFF5A7B8C)),
                     prefixIcon: const Icon(Icons.email, color: AppTheme.primaryColor),
                     suffixIcon: _emailController.text.isNotEmpty
                         ? const Icon(Icons.check_circle, color: AppTheme.successColor)
@@ -126,13 +140,15 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   onChanged: (_) => setState(() {}),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 20),
                 // Password Field
                 TextField(
                   controller: _passwordController,
                   obscureText: !_showPassword,
                   decoration: InputDecoration(
                     hintText: 'Enter your password',
+                    helperText: 'Minimum 8 characters',
+                    helperStyle: const TextStyle(fontSize: 12, color: Color(0xFF5A7B8C)),
                     prefixIcon: const Icon(Icons.lock, color: AppTheme.primaryColor),
                     suffixIcon: IconButton(
                       icon: Icon(

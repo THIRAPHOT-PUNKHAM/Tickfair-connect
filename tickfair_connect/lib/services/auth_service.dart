@@ -1,24 +1,25 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:google_sign_in/google_sign_in.dart';
 
 /// A simple wrapper around FirebaseAuth for authentication flows.
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  
-  // Web OAuth Client ID from Firebase Console
-  // Project: tickfair-connect-ff20d
-  static const String _webClientId = '634102915421-h4o1k9m8l7j6i5h4g3f2e1d0c9b8a7f6.apps.googleusercontent.com';
-  
-  late final GoogleSignIn _googleSignIn;
 
-  AuthService() {
-    // Initialize GoogleSignIn
-    _googleSignIn = GoogleSignIn(
-      clientId: _webClientId,
-      scopes: ['email', 'profile'],
-      forceCodeForRefreshToken: true,
-    );
-  }
+  // Use the Firebase web OAuth client ID for mobile server-side token exchange.
+  // This is required for GoogleSignIn to return a valid idToken on Android/iOS.
+  static const String _webClientId =
+      '634102915421-5u86g14u0e0533lgaqdu1oss9rtpf49q.apps.googleusercontent.com';
+
+  final GoogleSignIn? _googleSignIn = kIsWeb
+      ? null
+      : GoogleSignIn(
+          scopes: ['email', 'profile'],
+          serverClientId: _webClientId,
+          forceCodeForRefreshToken: true,
+        );
+
+  AuthService();
 
   /// Registers a user with email and password.
   Future<UserCredential> signUp(String email, String password) async {
@@ -39,22 +40,26 @@ class AuthService {
   /// Signs in with Google account (Gmail).
   Future<UserCredential> signInWithGoogle() async {
     try {
-      // Sign out first to show account picker
-      await _googleSignIn.signOut();
-      
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      
+      if (kIsWeb) {
+        // Web-specific Google Sign-In uses Firebase auth popup.
+        final provider = GoogleAuthProvider();
+        final UserCredential userCredential = await _auth.signInWithPopup(provider);
+        return userCredential;
+      }
+
+      // Mobile platforms use GoogleSignIn plugin.
+      await _googleSignIn?.signOut();
+      final GoogleSignInAccount? googleUser = await _googleSignIn?.signIn();
       if (googleUser == null) {
         throw Exception('Google sign-in was cancelled by user');
       }
 
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-      
       final accessToken = googleAuth.accessToken;
       final idToken = googleAuth.idToken;
 
-      if (idToken == null) {
-        throw Exception('Unable to get ID token from Google. Please try again.');
+      if (idToken == null && accessToken == null) {
+        throw Exception('Unable to get authentication token from Google. Please try again.');
       }
 
       final OAuthCredential credential = GoogleAuthProvider.credential(
@@ -62,9 +67,7 @@ class AuthService {
         idToken: idToken,
       );
 
-      final UserCredential userCredential = 
-          await _auth.signInWithCredential(credential);
-      
+      final UserCredential userCredential = await _auth.signInWithCredential(credential);
       return userCredential;
     } on FirebaseAuthException catch (e) {
       String errorMsg = 'Firebase error: ${e.message}';
@@ -90,7 +93,7 @@ class AuthService {
   /// Signs out the current user.
   Future<void> signOut() async {
     try {
-      await _googleSignIn.signOut();
+      await _googleSignIn?.signOut();
     } catch (e) {
       // Ignore errors during sign out
     }

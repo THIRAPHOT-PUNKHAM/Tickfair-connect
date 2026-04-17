@@ -21,16 +21,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _showConfirmPassword = false;
 
   Future<void> _submit() async {
-    if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+    final confirmPassword = _confirmPasswordController.text;
+
+    // Validation
+    if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
       setState(() => _error = 'Please fill all fields');
       return;
     }
-    if (_passwordController.text != _confirmPasswordController.text) {
-      setState(() => _error = 'Passwords do not match');
+
+    if (!email.endsWith('@gmail.com')) {
+      setState(() => _error = 'Please use a Gmail account (@gmail.com)');
       return;
     }
-    if (_passwordController.text.length < 6) {
-      setState(() => _error = 'Password must be at least 6 characters');
+
+    if (password.length < 8) {
+      setState(() => _error = 'Password must be at least 8 characters');
+      return;
+    }
+
+    if (password != confirmPassword) {
+      setState(() => _error = 'Passwords do not match');
       return;
     }
 
@@ -39,10 +51,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       _error = null;
     });
     try {
-      await context.read<AuthService>().signUp(
-            _emailController.text.trim(),
-            _passwordController.text,
-          );
+      await context.read<AuthService>().signUp(email, password);
       if (mounted) Navigator.pop(context);
     } catch (e) {
       setState(() => _error = e.toString().replaceFirst('Exception: ', ''));
@@ -54,8 +63,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF0F4F8),
       appBar: AppBar(
-        title: const Text('Create Account'),
+        backgroundColor: Colors.white,
+        elevation: 1,
+        title: const Text('Create Account', style: TextStyle(color: Color(0xFF1A5F7A))),
+        iconTheme: const IconThemeData(color: Color(0xFF1A5F7A)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
@@ -73,13 +86,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: AppTheme.primaryColor,
+                    color: Color(0xFF1A5F7A),
                   ),
                 ),
                 const SizedBox(height: 8),
                 const Text(
                   'Register to start booking tickets fairly',
-                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                  style: TextStyle(fontSize: 14, color: Color(0xFF5A7B8C)),
                 ),
                 const SizedBox(height: 32),
                 // Email Field
@@ -88,6 +101,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     hintText: 'Enter your email',
+                    helperText: 'Must use @gmail.com',
+                    helperStyle: const TextStyle(fontSize: 12, color: Color(0xFF5A7B8C)),
                     prefixIcon: const Icon(Icons.email, color: AppTheme.primaryColor),
                     suffixIcon: _emailController.text.isNotEmpty
                         ? const Icon(Icons.check_circle, color: AppTheme.successColor)
@@ -95,13 +110,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   onChanged: (_) => setState(() {}),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 20),
                 // Password Field
                 TextField(
                   controller: _passwordController,
                   obscureText: !_showPassword,
                   decoration: InputDecoration(
                     hintText: 'Create a password',
+                    helperText: 'Minimum 8 characters',
+                    helperStyle: const TextStyle(fontSize: 12, color: Color(0xFF5A7B8C)),
                     prefixIcon: const Icon(Icons.lock, color: AppTheme.primaryColor),
                     suffixIcon: IconButton(
                       icon: Icon(
@@ -113,13 +130,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   onChanged: (_) => setState(() {}),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 20),
                 // Confirm Password Field
                 TextField(
                   controller: _confirmPasswordController,
                   obscureText: !_showConfirmPassword,
                   decoration: InputDecoration(
                     hintText: 'Confirm password',
+                    helperText: 'Must match password',
+                    helperStyle: const TextStyle(fontSize: 12, color: Color(0xFF5A7B8C)),
                     prefixIcon: const Icon(Icons.lock, color: AppTheme.primaryColor),
                     suffixIcon: IconButton(
                       icon: Icon(
