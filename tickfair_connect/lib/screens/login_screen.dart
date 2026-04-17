@@ -19,6 +19,21 @@ class _LoginScreenState extends State<LoginScreen> {
   String? _error;
   bool _showPassword = false;
 
+  Future<void> _signInWithGoogle() async {
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+    try {
+      await context.read<AuthService>().signInWithGoogle();
+      if (mounted) Navigator.pushReplacementNamed(context, '/events');
+    } catch (e) {
+      setState(() => _error = e.toString().replaceFirst('Exception: ', ''));
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
   Future<void> _submit() async {
     if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
       setState(() => _error = 'Please fill all fields');
@@ -155,6 +170,20 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: const Text('Sign In'),
                       ),
                 const SizedBox(height: 16),
+                // Google Sign-In Button
+                _loading
+                    ? const SizedBox.shrink()
+                    : ElevatedButton.icon(
+                        onPressed: _signInWithGoogle,
+                        icon: const Icon(Icons.mail),
+                        label: const Text('Sign in with Gmail'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.black87,
+                          side: const BorderSide(color: Colors.grey),
+                        ),
+                      ),
+                const SizedBox(height: 16),
                 // Register Link
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -165,7 +194,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     TextButton(
                       onPressed: () => Navigator.pushNamed(context, RegisterScreen.routeName),
-                      child: const Text('Create one'),
+                      child: const Text('Create Account'),
                     ),
                   ],
                 ),
