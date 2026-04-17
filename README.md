@@ -72,4 +72,3 @@ This project is part of an academic assignment and for personal use.
 
 ## 📬 Contact
 For questions or suggestions, contact: `[6731503014@lamduan.mfu.ac.th]`
-```
