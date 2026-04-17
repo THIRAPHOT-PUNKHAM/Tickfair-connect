@@ -28,7 +28,12 @@ class _LoginScreenState extends State<LoginScreen> {
       await context.read<AuthService>().signInWithGoogle();
       if (mounted) Navigator.pushReplacementNamed(context, '/events');
     } catch (e) {
-      setState(() => _error = e.toString().replaceFirst('Exception: ', ''));
+      String errorMsg = e.toString().replaceFirst('Exception: ', '');
+      // Show user-friendly error message
+      if (errorMsg.contains('popup_closed')) {
+        errorMsg = 'Sign-in was cancelled. Please try again.';
+      }
+      setState(() => _error = errorMsg);
     } finally {
       if (mounted) setState(() => _loading = false);
     }

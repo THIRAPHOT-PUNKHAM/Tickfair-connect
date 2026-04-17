@@ -12,10 +12,11 @@ class AuthService {
   late final GoogleSignIn _googleSignIn;
 
   AuthService() {
-    // Initialize GoogleSignIn with Web Client ID
+    // Initialize GoogleSignIn
     _googleSignIn = GoogleSignIn(
-      clientId: _webClientId, // Required for web platform
-      scopes: ['email', 'profile'], // Request scopes
+      clientId: _webClientId,
+      scopes: ['email', 'profile'],
+      forceCodeForRefreshToken: true,
     );
   }
 
@@ -38,33 +39,61 @@ class AuthService {
   /// Signs in with Google account (Gmail).
   Future<UserCredential> signInWithGoogle() async {
     try {
+      // Sign out first to show account picker
+      await _googleSignIn.signOut();
+      
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      
       if (googleUser == null) {
-        throw Exception('Google sign-in was cancelled');
+        throw Exception('Google sign-in was cancelled by user');
       }
 
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
       
-      if (googleAuth.idToken == null) {
-        throw Exception('Failed to obtain ID token from Google');
+      final accessToken = googleAuth.accessToken;
+      final idToken = googleAuth.idToken;
+
+      if (idToken == null) {
+        throw Exception('Unable to get ID token from Google. Please try again.');
       }
 
       final OAuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
+        accessToken: accessToken,
+        idToken: idToken,
       );
 
-      return await _auth.signInWithCredential(credential);
+      final UserCredential userCredential = 
+          await _auth.signInWithCredential(credential);
+      
+      return userCredential;
     } on FirebaseAuthException catch (e) {
-      throw Exception('Firebase: ${e.message}');
+      String errorMsg = 'Firebase error: ${e.message}';
+      if (e.code == 'account-exists-with-different-credential') {
+        errorMsg = 'This Google account is already linked to another login method';
+      } else if (e.code == 'invalid-credential') {
+        errorMsg = 'Invalid credentials. Please try again.';
+      }
+      throw Exception(errorMsg);
+    } on FirebaseException catch (e) {
+      throw Exception('Firebase error: ${e.message}');
     } catch (e) {
-      throw Exception('Google Sign-In error: $e');
+      String errorMsg = '$e';
+      if (e.toString().contains('popup_closed')) {
+        errorMsg = 'Google Sign-In popup was closed. Please try again.';
+      } else if (e.toString().contains('network')) {
+        errorMsg = 'Network error. Please check your internet connection.';
+      }
+      throw Exception(errorMsg);
     }
   }
 
   /// Signs out the current user.
   Future<void> signOut() async {
-    await _googleSignIn.signOut();
+    try {
+      await _googleSignIn.signOut();
+    } catch (e) {
+      // Ignore errors during sign out
+    }
     return await _auth.signOut();
   }
 
