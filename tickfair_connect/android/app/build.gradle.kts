@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     // START: FlutterFire Configuration
@@ -8,8 +10,12 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+val keyPropertiesFile = rootProject.file("key.properties")
+val keyProperties = Properties()
+keyProperties.load(keyPropertiesFile.inputStream())
+
 android {
-    namespace = "com.example.tickfair_connect_app"
+    namespace = "com.tickfairconnect.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -22,11 +28,17 @@ android {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
+    signingConfigs {
+        create("release") {
+            keyAlias = keyProperties["keyAlias"] as String
+            keyPassword = keyProperties["keyPassword"] as String
+            storeFile = file(keyProperties["storeFile"] as String)
+            storePassword = keyProperties["storePassword"] as String
+        }
+    }
+
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.tickfair_connect_app"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
+        applicationId = "com.tickfairconnect.app"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
@@ -35,9 +47,26 @@ android {
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName("release")
+        }
+    }
+
+    packaging {
+        resources {
+            excludes += setOf(
+                "META-INF/DEPENDENCIES",
+                "META-INF/LICENSE",
+                "META-INF/LICENSE.txt",
+                "META-INF/license.txt",
+                "META-INF/NOTICE",
+                "META-INF/NOTICE.txt",
+                "META-INF/notice.txt",
+                "META-INF/*.kotlin_module"
+            )
+            pickFirsts += setOf(
+                "META-INF/INDEX.LIST",
+                "META-INF/io.netty.versions.properties"
+            )
         }
     }
 }

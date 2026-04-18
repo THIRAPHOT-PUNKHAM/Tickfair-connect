@@ -31,11 +31,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return;
     }
 
-    if (!email.endsWith('@gmail.com')) {
-      setState(() => _error = 'Please use a Gmail account (@gmail.com)');
-      return;
-    }
-
     if (password.length < 8) {
       setState(() => _error = 'Password must be at least 8 characters');
       return;
@@ -101,8 +96,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     hintText: 'Enter your email',
-                    helperText: 'Must use @gmail.com',
-                    helperStyle: const TextStyle(fontSize: 12, color: Color(0xFF5A7B8C)),
                     prefixIcon: const Icon(Icons.email, color: AppTheme.primaryColor),
                     suffixIcon: _emailController.text.isNotEmpty
                         ? const Icon(Icons.check_circle, color: AppTheme.successColor)

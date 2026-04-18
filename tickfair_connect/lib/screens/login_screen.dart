@@ -49,11 +49,6 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    if (!email.endsWith('@gmail.com')) {
-      setState(() => _error = 'Please use a Gmail account (@gmail.com)');
-      return;
-    }
-
     if (password.length < 8) {
       setState(() => _error = 'Password must be at least 8 characters');
       return;
@@ -130,8 +125,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     hintText: 'Enter your email',
-                    helperText: 'Must use @gmail.com',
-                    helperStyle: const TextStyle(fontSize: 12, color: Color(0xFF5A7B8C)),
                     prefixIcon: const Icon(Icons.email, color: AppTheme.primaryColor),
                     suffixIcon: _emailController.text.isNotEmpty
                         ? const Icon(Icons.check_circle, color: AppTheme.successColor)
@@ -146,7 +139,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   obscureText: !_showPassword,
                   decoration: InputDecoration(
                     hintText: 'Enter your password',
-                    helperText: 'Minimum 8 characters',
                     helperStyle: const TextStyle(fontSize: 12, color: Color(0xFF5A7B8C)),
                     prefixIcon: const Icon(Icons.lock, color: AppTheme.primaryColor),
                     suffixIcon: IconButton(
@@ -193,14 +185,35 @@ class _LoginScreenState extends State<LoginScreen> {
                 // Google Sign-In Button
                 _loading
                     ? const SizedBox.shrink()
-                    : ElevatedButton.icon(
+                    : OutlinedButton(
                         onPressed: _signInWithGoogle,
-                        icon: const Icon(Icons.mail),
-                        label: const Text('Sign in with Gmail'),
-                        style: ElevatedButton.styleFrom(
+                        style: OutlinedButton.styleFrom(
                           backgroundColor: Colors.white,
                           foregroundColor: Colors.black87,
-                          side: const BorderSide(color: Colors.grey),
+                          side: const BorderSide(color: Color(0xFFDADADA)),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/images/google.png',
+                              width: 16,
+                              height: 16,
+                            ),
+                            const SizedBox(width: 12),
+                            const Text(
+                              'Sign in with Google',
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                 const SizedBox(height: 16),

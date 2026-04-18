@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TickFair Connect – Account Deletion Request</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      padding: 40px 16px;
+      min-height: 100vh;
+    }
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 40px;
+      max-width: 560px;
+      width: 100%;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    }
+    .logo {
+      font-size: 22px;
+      font-weight: 700;
+      color: #1a73e8;
+      margin-bottom: 8px;
+    }
+    h1 {
+      font-size: 20px;
+      color: #202124;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      font-size: 14px;
+      color: #5f6368;
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: #202124;
+      margin-bottom: 6px;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #dadce0;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #202124;
+      outline: none;
+      transition: border 0.2s;
+      margin-bottom: 20px;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: #1a73e8;
+    }
+    textarea { resize: vertical; min-height: 90px; }
+    .info-box {
+      background: #e8f0fe;
+      border-left: 4px solid #1a73e8;
+      padding: 14px 16px;
+      border-radius: 4px;
+      font-size: 13px;
+      color: #3c4043;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+    .info-box ul { padding-left: 18px; margin-top: 6px; }
+    .checkbox-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    .checkbox-row input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin: 0;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+    .checkbox-row span {
+      font-size: 13px;
+      color: #3c4043;
+      line-height: 1.5;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #d93025;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover { background: #b31412; }
+    .success {
+      display: none;
+      text-align: center;
+      padding: 32px 0;
+    }
+    .success .icon { font-size: 48px; margin-bottom: 12px; }
+    .success h2 { color: #202124; margin-bottom: 8px; }
+    .success p { font-size: 14px; color: #5f6368; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">TickFair Connect</div>
+    <h1>Account Deletion Request</h1>
+    <p class="subtitle">
+      กรอกแบบฟอร์มนี้เพื่อขอลบบัญชีและข้อมูลของคุณออกจาก TickFair Connect<br>
+      Fill in this form to request deletion of your account and associated data.
+    </p>
+
+    <div class="info-box">
+      <strong>ข้อมูลที่จะถูกลบ / Data that will be deleted:</strong>
+      <ul>
+        <li>ข้อมูลบัญชี (อีเมล, ชื่อผู้ใช้)</li>
+        <li>ประวัติการจองตั๋วทั้งหมด</li>
+        <li>ข้อมูลที่นั่งที่เลือกไว้</li>
+      </ul>
+      <br>
+      <strong>ระยะเวลาดำเนินการ:</strong> ภายใน 30 วันทำการ
+    </div>
+
+    <form id="deleteForm">
+      <label for="email">อีเมลที่ใช้ลงทะเบียน / Registered Email *</label>
+      <input type="email" id="email" placeholder="example@email.com" required />
+
+      <label for="reason">เหตุผลในการลบบัญชี / Reason for deletion</label>
+      <select id="reason">
+        <option value="">-- เลือกเหตุผล / Select reason --</option>
+        <option value="no_longer_use">ไม่ได้ใช้งานแล้ว / No longer using the app</option>
+        <option value="privacy">ต้องการความเป็นส่วนตัว / Privacy concerns</option>
+        <option value="other">อื่นๆ / Other</option>
+      </select>
+
+      <label for="note">หมายเหตุเพิ่มเติม / Additional notes</label>
+      <textarea id="note" placeholder="(ไม่บังคับ / Optional)"></textarea>
+
+      <div class="checkbox-row">
+        <input type="checkbox" id="confirm" required />
+        <span>
+          ฉันเข้าใจว่าการลบบัญชีจะเป็นการถาวรและไม่สามารถกู้คืนข้อมูลได้<br>
+          I understand that account deletion is permanent and irreversible.
+        </span>
+      </div>
+
+      <button type="submit">ส่งคำขอลบบัญชี / Submit Deletion Request</button>
+    </form>
+
+    <div class="success" id="successMsg">
+      <div class="icon">✅</div>
+      <h2>ส่งคำขอสำเร็จ / Request Submitted</h2>
+      <p>เราจะดำเนินการลบบัญชีของคุณภายใน 30 วันทำการ<br>
+         We will process your request within 30 business days.</p>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('deleteForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      // TODO: ส่งข้อมูลไปยัง backend หรือ email ของทีมงาน
+      document.getElementById('deleteForm').style.display = 'none';
+      document.getElementById('successMsg').style.display = 'block';
+    });
+  </script>
+</body>
+</html>

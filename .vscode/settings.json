@@ -1,3 +1,4 @@
 {
-    "cmake.sourceDirectory": "D:/Mini Project tickfair connect/tickfair_connect/linux"
+    "cmake.sourceDirectory": "D:/Mini Project tickfair connect/tickfair_connect/linux",
+    "java.configuration.updateBuildConfiguration": "interactive"
 }
