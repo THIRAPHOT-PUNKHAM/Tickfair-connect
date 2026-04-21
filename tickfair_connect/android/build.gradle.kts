@@ -3,6 +3,11 @@ allprojects {
         google()
         mavenCentral()
     }
+    configurations.all {
+        resolutionStrategy {
+            force("com.google.guava:guava:31.1-android")
+        }
+    }
 }
 
 val newBuildDir: Directory =

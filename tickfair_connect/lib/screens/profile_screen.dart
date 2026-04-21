@@ -332,10 +332,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 // Logout Button
                 ElevatedButton.icon(
                   onPressed: () async {
-                    final navigator = Navigator.of(context);
                     await auth.signOut();
-                    if (!mounted) return;
-                    navigator.pushReplacementNamed('/login');
+                    if (context.mounted) {
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                        '/login',
+                        (route) => false,
+                      );
+                    }
                   },
                   icon: const Icon(Icons.logout),
                   label: const Text('Sign Out'),

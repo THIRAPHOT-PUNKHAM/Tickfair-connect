@@ -44,10 +44,13 @@ class _EventListScreenState extends State<EventListScreen> {
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () async {
-              final navigator = Navigator.of(context);
               await auth.signOut();
-              if (!mounted) return;
-              navigator.pushReplacementNamed('/login');
+              if (context.mounted) {
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  '/login',
+                  (route) => false,
+                );
+              }
             },
           ),
         ],
