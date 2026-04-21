@@ -10,12 +10,6 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
-// Exclude empty listenablefuture placeholder that causes VerifyException
-// in mergeReleaseJavaResource with AGP 8.7.x + Firebase
-configurations.all {
-    exclude(group = "com.google.guava", module = "listenablefuture")
-}
-
 val keyPropertiesFile = rootProject.file("key.properties")
 val keyProperties = Properties()
 keyProperties.load(keyPropertiesFile.inputStream())
