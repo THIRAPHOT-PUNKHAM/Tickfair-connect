@@ -58,12 +58,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF0F4F8),
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 1,
-        title: const Text('Create Account', style: TextStyle(color: Color(0xFF1A5F7A))),
-        iconTheme: const IconThemeData(color: Color(0xFF1A5F7A)),
+        title: const Text('Create Account'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
@@ -81,13 +77,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF1A5F7A),
                   ),
                 ),
                 const SizedBox(height: 6),
                 const Text(
                   'Register to start booking tickets fairly',
-                  style: TextStyle(fontSize: 13, color: Color(0xFF5A7B8C)),
+                  style: TextStyle(fontSize: 13),
                 ),
                 const SizedBox(height: 24),
                 // Email Field
@@ -111,7 +106,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   decoration: InputDecoration(
                     hintText: 'Create a password',
                     helperText: 'Minimum 8 characters',
-                    helperStyle: const TextStyle(fontSize: 12, color: Color(0xFF5A7B8C)),
+                    helperStyle: const TextStyle(fontSize: 12),
                     prefixIcon: const Icon(Icons.lock, color: AppTheme.primaryColor),
                     suffixIcon: IconButton(
                       icon: Icon(
@@ -131,7 +126,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   decoration: InputDecoration(
                     hintText: 'Confirm password',
                     helperText: 'Must match password',
-                    helperStyle: const TextStyle(fontSize: 12, color: Color(0xFF5A7B8C)),
+                    helperStyle: const TextStyle(fontSize: 12),
                     prefixIcon: const Icon(Icons.lock, color: AppTheme.primaryColor),
                     suffixIcon: IconButton(
                       icon: Icon(

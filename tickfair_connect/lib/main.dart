@@ -19,9 +19,9 @@ import 'screens/event_list_screen.dart';
 import 'screens/event_detail_screen.dart';
 import 'screens/queue_status_screen.dart';
 import 'screens/seat_selection_screen.dart';
-import 'screens/payment_screen.dart';
 import 'screens/reservation_confirmation_screen.dart';
 import 'screens/profile_screen.dart';
+import 'screens/landing_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,15 +45,15 @@ class MyApp extends StatelessWidget {
         title: 'TickFair Connect',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.getTheme(),
-        initialRoute: LoginScreen.routeName,
+        initialRoute: LandingScreen.routeName,
         routes: {
+          LandingScreen.routeName: (ctx) => const LandingScreen(),
           LoginScreen.routeName: (ctx) => const LoginScreen(),
           RegisterScreen.routeName: (ctx) => const RegisterScreen(),
           EventListScreen.routeName: (ctx) => const EventListScreen(),
           ProfileScreen.routeName: (ctx) => const ProfileScreen(),
           QueueStatusScreen.routeName: (ctx) => const QueueStatusScreen(),
           SeatSelectionScreen.routeName: (ctx) => const SeatSelectionScreen(),
-          PaymentScreen.routeName: (ctx) => const PaymentScreen(),
           ReservationConfirmationScreen.routeName: (ctx) => const ReservationConfirmationScreen(),
         },
         onGenerateRoute: (settings) {

@@ -71,7 +71,6 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF0F4F8),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -82,21 +81,24 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 // Logo/Header
                 Center(
-                  child: Image.asset(
-                    'assets/images/logo.png',
-                    width: 100,
-                    height: 100,
-                    fit: BoxFit.contain,
-                    errorBuilder: (context, error, stackTrace) {
-                      return const Icon(
-                        Icons.local_activity,
-                        size: 100,
-                        color: AppTheme.primaryColor,
-                      );
-                    },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(14),
+                    child: Image.asset(
+                      'assets/images/logo.png',
+                      width: 110,
+                      height: 110,
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Icon(
+                          Icons.local_activity,
+                          size: 100,
+                          color: AppTheme.primaryColor,
+                        );
+                      },
+                    ),
                   ),
                 ),
-                const SizedBox(height: 16),
+
                 // Title
                 const Center(
                   child: Text(
@@ -104,7 +106,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF1A5F7A),
                     ),
                   ),
                 ),
@@ -114,7 +115,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     'Fair Queuing for Smart Events',
                     style: TextStyle(
                       fontSize: 13,
-                      color: Color(0xFF5A7B8C),
                     ),
                   ),
                 ),
@@ -188,13 +188,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     : OutlinedButton(
                         onPressed: _signInWithGoogle,
                         style: OutlinedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          foregroundColor: Colors.black87,
-                          side: const BorderSide(color: Color(0xFFDADADA)),
                           padding: const EdgeInsets.symmetric(vertical: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4),
-                          ),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -205,14 +199,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               height: 16,
                             ),
                             const SizedBox(width: 12),
-                            const Text(
-                              'Sign in with Google',
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black87,
-                              ),
-                            ),
+                            const Text('Sign in with Google'),
                           ],
                         ),
                       ),
@@ -223,7 +210,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     const Text(
                       "Don't have an account? ",
-                      style: TextStyle(color: Colors.grey),
                     ),
                     TextButton(
                       onPressed: () => Navigator.pushNamed(context, RegisterScreen.routeName),

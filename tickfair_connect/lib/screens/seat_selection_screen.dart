@@ -44,19 +44,21 @@ class _SeatSelectionScreenState extends State<SeatSelectionScreen> {
     setState(() => _reserving = true);
     try {
       final seatLabel = _getSeatLabel(selectedSeatIndex!);
+      final db = context.read<DbService>();
 
-      // Navigate to payment screen
+      // Reserve ticket directly (no payment screen)
+      final ticketId = await db.reserveTicketWithSeat(
+        eventId,
+        queueId,
+        seatLabel,
+        _eventPrice,
+      );
+
       if (mounted) {
         Navigator.pushReplacementNamed(
           context,
-          '/payment',
-          arguments: {
-            'eventId': eventId,
-            'queueId': queueId,
-            'eventName': _eventName,
-            'seatLabel': seatLabel,
-            'price': _eventPrice,
-          },
+          '/reservation',
+          arguments: {'eventId': eventId, 'ticketId': ticketId},
         );
       }
     } catch (e) {
