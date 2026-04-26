@@ -1,4 +1,4 @@
-package com.example.tickfair_connect_app
+package com.tickfairconnect.app
 
 import io.flutter.embedding.android.FlutterActivity
 
