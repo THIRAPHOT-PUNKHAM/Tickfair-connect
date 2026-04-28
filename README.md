@@ -12,8 +12,23 @@ The app targets university-age users who often miss out on tickets due to simult
 * **📅 Event Listing & Discovery:** Display a scrollable list of available events with search/filter capabilities.
 * **👥 Queue Management:** Allow users to join a queue for selected events, preventing duplicate entries.
 * **⏱️ Real-Time Updates:** Display queue position and estimated wait time.
-* **🎫 Ticket Reservation:** Reserve tickets when it's the user's turn, with confirmation and ticket saving.
+* **💺 Seat Selection:** Choose preferred seats before confirming a reservation.
+* **🎫 Ticket Reservation:** Reserve tickets when it's the user's turn, with a confirmation screen and ticket saving.
 * **🎟️ My Tickets:** View booked tickets with QR code verification from the profile screen.
+
+## 🗂️ App Screens
+
+| Screen | Description |
+| :--- | :--- |
+| `LandingScreen` | Entry point — checks auth state and redirects accordingly |
+| `LoginScreen` | Email/password and Google Sign-In |
+| `RegisterScreen` | New user registration |
+| `EventListScreen` | Browsable list of available events |
+| `EventDetailScreen` | Full event info with join-queue action |
+| `QueueStatusScreen` | Live queue position and wait-time display |
+| `SeatSelectionScreen` | Seat picker before confirming a reservation |
+| `ReservationConfirmationScreen` | Booking summary and QR code |
+| `ProfileScreen` | User profile and saved tickets |
 
 ## 🛠️ Technology Stack
 
@@ -24,6 +39,7 @@ The app targets university-age users who often miss out on tickets due to simult
 | **Database** | Cloud Firestore 🗄️ |
 | **State Management** | Provider 🔄 |
 | **QR Code** | qr_flutter 🔲 |
+| **App Icons** | flutter_launcher_icons 🖼️ |
 
 ## 🚀 Installation and Running
 
@@ -50,6 +66,7 @@ The app targets university-age users who often miss out on tickets due to simult
    * Add an Android app and download `google-services.json` to `android/app/`.
    * Run `flutterfire configure` to generate `lib/firebase_options.dart`.
    * Enable **Email/Password** and **Google** sign-in methods in Firebase Authentication.
+   * Deploy Firestore rules: `firebase deploy --only firestore:rules`
 
 4. **Run the app:**
    ```bash
@@ -75,7 +92,7 @@ flutter build apk
 * **Developer:** Thiraphot Punkham
 * **Student ID:** 6731503014
 * **Date:** April 2026
-* **Version:** 1.0.0
+* **Version:** 1.0.1+3
 
 ## 📄 License
 This project is part of an academic assignment and for personal use.
